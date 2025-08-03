@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DesignForge - AI驱动的智能海报设计平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --accent-color: #ec4899;
+            --background-color: #0f0f23;
+            --panel-background: rgba(30, 41, 59, 0.8);
+            --text-color: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                              radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        
+        .input-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .results-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .posters-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .poster-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .poster-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.2);
+        }
+        
+        .poster-preview {
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            aspect-ratio: 1;
+        }
+        
+        .poster-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .select-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .select-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .download-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .download-btn {
+            flex: 1;
+            background: linear-gradient(135deg, #64748b, #475569);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.4);
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-color), #f59e0b);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4);
+        }
+        
+        .control-section {
+            margin-bottom: 2rem;
+        }
+        
+        .control-section h2 {
+            color: var(--text-color);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .template-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .template-card {
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .template-card:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .template-card.active {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        
+        .template-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+        
+        .template-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .generate-section {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .generate-btn {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+        
+        .posters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .poster-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .poster-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .poster-item.selected {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+            background: rgba(236, 72, 153, 0.1);
+        }
+        
+        .poster-preview {
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .poster-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .select-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .select-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        
+        .download-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .download-btn {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #64748b, #475569);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+        }
+        .control-section {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .control-section:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        h1 {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 0;
+            font-size: 32px;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+        h2 {
+            color: var(--text-color);
+            margin-top: 0;
+            font-size: 18px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+        textarea, select, input[type="range"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            font-size: 14px;
+            box-sizing: border-box;
+            color: var(--text-color);
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        textarea:focus, select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        textarea {
+            height: 120px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+        textarea::placeholder {
+            color: var(--text-secondary);
+        }
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 40px;
+            appearance: none;
+        }
+        input[type="range"] {
+            padding: 0;
+            height: 6px;
+            background: var(--glass-bg);
+            border-radius: 3px;
+            appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+        .layout-options, .color-palettes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 12px;
+        }
+        .layout-options label, .color-palette {
+            cursor: pointer;
+            border: 2px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        .layout-options label:hover, .color-palette:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-2px);
+        }
+        .layout-options input { display: none; }
+        .layout-options input:checked + label, .color-palette.active {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        .color-palette {
+            height: 48px;
+            display: flex;
+            padding: 4px;
+            overflow: hidden;
+        }
+        .color-palette div {
+            flex: 1;
+            border-radius: 6px;
+            margin: 0 1px;
+        }
+        .color-palette div:first-child { margin-left: 0; }
+        .color-palette div:last-child { margin-right: 0; }
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        button {
+            flex-grow: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        button:hover::before {
+            left: 100%;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+        button.secondary {
+            background: linear-gradient(135deg, #64748b, #475569);
+        }
+        button.secondary:hover {
+            box-shadow: 0 8px 25px rgba(100, 116, 139, 0.4);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 14px;
+        }
+        #poster-container-0,
+        #poster-container-1,
+        #poster-container-2,
+        #poster-container-3 {
+            width: 100%;
+            height: 300px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #poster-container-0::before,
+        #poster-container-1::before,
+        #poster-container-2::before,
+        #poster-container-3::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            border-radius: 14px;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <h1><i class="fas fa-magic" style="margin-right: 12px; font-size: 28px;"></i>DesignForge</h1>
+                <p class="subtitle">AI驱动的智能海报设计平台</p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <div class="control-section">
+                    <h2><i class="fas fa-edit"></i>输入文本内容</h2>
+                    <textarea id="text-input" placeholder="请输入您想要制作成海报的文本内容...\n例如：\n春季新品发布会\n2024年3月15日 下午2:00\n北京国际会展中心\n联系电话：400-123-4567" rows="6"></textarea>
+                </div>
+
+                <div class="control-section">
+                    <h2><i class="fas fa-th-large"></i>选择海报风格</h2>
+                    <div class="template-options">
+                        <div class="template-card active" data-template="modern">
+                            <div class="template-preview">
+                                <i class="fas fa-align-center"></i>
+                            </div>
+                            <h3>现代简约</h3>
+                            <p>居中对齐，简洁大方</p>
+                        </div>
+                        
+                        <div class="template-card" data-template="creative">
+                            <div class="template-preview">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                            <h3>创意设计</h3>
+                            <p>动态布局，富有创意</p>
+                        </div>
+                        
+                        <div class="template-card" data-template="business">
+                            <div class="template-preview">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                            <h3>商务专业</h3>
+                            <p>左对齐，专业严谨</p>
+                        </div>
+                        
+                        <div class="template-card" data-template="artistic">
+                            <div class="template-preview">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <h3>艺术风格</h3>
+                            <p>分散布局，艺术感强</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="generate-section">
+                    <button class="generate-btn" onclick="generatePosters()">
+                        <i class="fas fa-magic" style="margin-right: 8px;"></i>
+                        AI 生成 4 款海报设计
+                    </button>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2><i class="fas fa-image"></i>AI 生成的海报设计</h2>
+                <div id="loading-message" style="text-align: center; color: var(--text-secondary); margin: 2rem 0; display: none;">
+                    <i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>
+                    正在生成海报设计，请稍候...
+                </div>
+                <div class="posters-grid" id="posters-grid">
+                    <div class="poster-item" data-index="0">
+                        <div class="poster-preview">
+                            <div id="poster-container-0"></div>
+                        </div>
+                        <div class="poster-actions">
+                            <button onclick="selectPoster(0)" class="select-btn">
+                                <i class="fas fa-check"></i> 选择此设计
+                            </button>
+                            <div class="download-group">
+                                <button onclick="downloadPoster(0, 'svg')" class="download-btn">
+                                    <i class="fas fa-download"></i> SVG
+                                </button>
+                                <button onclick="downloadPoster(0, 'png')" class="download-btn">
+                                    <i class="fas fa-download"></i> PNG
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="poster-item" data-index="1">
+                        <div class="poster-preview">
+                            <div id="poster-container-1"></div>
+                        </div>
+                        <div class="poster-actions">
+                            <button onclick="selectPoster(1)" class="select-btn">
+                                <i class="fas fa-check"></i> 选择此设计
+                            </button>
+                            <div class="download-group">
+                                <button onclick="downloadPoster(1, 'svg')" class="download-btn">
+                                    <i class="fas fa-download"></i> SVG
+                                </button>
+                                <button onclick="downloadPoster(1, 'png')" class="download-btn">
+                                    <i class="fas fa-download"></i> PNG
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="poster-item" data-index="2">
+                        <div class="poster-preview">
+                            <div id="poster-container-2"></div>
+                        </div>
+                        <div class="poster-actions">
+                            <button onclick="selectPoster(2)" class="select-btn">
+                                <i class="fas fa-check"></i> 选择此设计
+                            </button>
+                            <div class="download-group">
+                                <button onclick="downloadPoster(2, 'svg')" class="download-btn">
+                                    <i class="fas fa-download"></i> SVG
+                                </button>
+                                <button onclick="downloadPoster(2, 'png')" class="download-btn">
+                                    <i class="fas fa-download"></i> PNG
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="poster-item" data-index="3">
+                        <div class="poster-preview">
+                            <div id="poster-container-3"></div>
+                        </div>
+                        <div class="poster-actions">
+                            <button onclick="selectPoster(3)" class="select-btn">
+                                <i class="fas fa-check"></i> 选择此设计
+                            </button>
+                            <div class="download-group">
+                                <button onclick="downloadPoster(3, 'svg')" class="download-btn">
+                                    <i class="fas fa-download"></i> SVG
+                                </button>
+                                <button onclick="downloadPoster(3, 'png')" class="download-btn">
+                                    <i class="fas fa-download"></i> PNG
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const controls = {
+            text: document.getElementById('text-input'),
+            layout: document.getElementById('layout-options'),
+            colors: document.getElementById('color-palettes'),
+            fontFamily: document.getElementById('font-family'),
+            fontSize: document.getElementById('font-size'),
+            posterContainer: document.getElementById('poster-container'),
+            downloadSvgBtn: document.getElementById('download-svg'),
+            downloadPngBtn: document.getElementById('download-png'),
+        };
+
+        // 海报模板配置
+        const posterTemplates = {
+            'modern': {
+                name: '现代简约',
+                colors: {
+                    primary: '#667eea',
+                    secondary: '#764ba2',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    text: '#ffffff',
+                    accent: '#f093fb'
+                },
+                layout: 'center',
+                fontFamily: 'Inter',
+                fontSize: 32
+            },
+            'creative': {
+                name: '创意设计',
+                colors: {
+                    primary: '#ff6b6b',
+                    secondary: '#4ecdc4',
+                    background: 'linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%)',
+                    text: '#ffffff',
+                    accent: '#ffe66d'
+                },
+                layout: 'creative',
+                fontFamily: 'Arial',
+                fontSize: 28
+            },
+            'business': {
+                name: '商务专业',
+                colors: {
+                    primary: '#2c3e50',
+                    secondary: '#3498db',
+                    background: 'linear-gradient(135deg, #2c3e50 0%, #3498db 100%)',
+                    text: '#ffffff',
+                    accent: '#e74c3c'
+                },
+                layout: 'left',
+                fontFamily: 'Georgia',
+                fontSize: 30
+            },
+            'artistic': {
+                name: '艺术风格',
+                colors: {
+                    primary: '#8e44ad',
+                    secondary: '#e67e22',
+                    background: 'linear-gradient(135deg, #8e44ad 0%, #e67e22 100%)',
+                    text: '#ffffff',
+                    accent: '#f39c12'
+                },
+                layout: 'scattered',
+                fontFamily: 'Times New Roman',
+                fontSize: 26
+            }
+        };
+
+        let currentTemplate = 'modern';
+        let generatedPosters = [];
+
+        // 模板选择事件处理
+        document.addEventListener('DOMContentLoaded', function() {
+            const templateCards = document.querySelectorAll('.template-card');
+            templateCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    templateCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    currentTemplate = this.dataset.template;
+                });
+            });
+        });
+
+        // 生成四张不同风格的海报
+        function generatePosters() {
+            const textInput = document.getElementById('text-input').value.trim();
+            if (!textInput) {
+                alert('请输入文本内容');
+                return;
+            }
+
+            const loadingMessage = document.getElementById('loading-message');
+            loadingMessage.style.display = 'block';
+
+            // 清空之前的海报
+            generatedPosters = [];
+
+            // 获取所有模板类型
+            const templateTypes = Object.keys(posterTemplates);
+
+            // 为每个容器生成不同风格的海报
+            templateTypes.forEach((templateType, index) => {
+                setTimeout(() => {
+                    const template = posterTemplates[templateType];
+                    const posterConfig = {
+                        text: textInput,
+                        layout: template.layout,
+                        colors: template.colors,
+                        fontFamily: template.fontFamily,
+                        fontSize: template.fontSize
+                    };
+
+                    const svg = generatePosterSVG(posterConfig);
+                    const container = document.getElementById(`poster-container-${index}`);
+                    container.innerHTML = '';
+                    container.appendChild(svg);
+
+                    generatedPosters[index] = {
+                        svg: svg,
+                        config: posterConfig,
+                        template: templateType
+                    };
+
+                    // 如果是最后一个，隐藏加载信息并显示海报网格
+                    if (index === templateTypes.length - 1) {
+                        setTimeout(() => {
+                            loadingMessage.style.display = 'none';
+                            document.getElementById('posters-grid').style.display = 'grid';
+                        }, 500);
+                    }
+                }, index * 300); // 错开生成时间，增加动画效果
+            });
+        }
+
+        // 选择海报
+        function selectPoster(index) {
+            if (!generatedPosters[index]) {
+                alert('请先生成海报');
+                return;
+            }
+
+            // 高亮选中的海报
+            document.querySelectorAll('.poster-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            document.querySelector(`[data-index="${index}"]`).classList.add('selected');
+
+            // 可以在这里添加更多选中后的逻辑
+            console.log('选中海报:', index, generatedPosters[index].template);
+        }
+
+        // 下载海报
+        function downloadPoster(index, format) {
+            if (!generatedPosters[index]) {
+                alert('请先生成海报');
+                return;
+            }
+
+            const poster = generatedPosters[index];
+            const filename = `poster_${poster.template}_${index + 1}`;
+
+            if (format === 'svg') {
+                downloadSVG(poster.svg, filename);
+            } else if (format === 'png') {
+                downloadPNG(poster.svg, filename);
+            }
+        }
+
+        function generatePosterSVG({ text, layout, colors, fontFamily, fontSize }) {
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            const width = 400, height = 300;
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            const uniqueId = Math.random().toString(36).substr(2, 9);
+            
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '100%');
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            svg.setAttribute('style', `font-family: ${fontFamily};`);
+
+            // 创建渐变定义
+            const defs = document.createElementNS(svgNS, 'defs');
+            const gradient = document.createElementNS(svgNS, 'linearGradient');
+            gradient.setAttribute('id', `bgGradient${uniqueId}`);
+            gradient.setAttribute('x1', '0%');
+            gradient.setAttribute('y1', '0%');
+            gradient.setAttribute('x2', '100%');
+            gradient.setAttribute('y2', '100%');
+            
+            const stop1 = document.createElementNS(svgNS, 'stop');
+            stop1.setAttribute('offset', '0%');
+            stop1.setAttribute('stop-color', colors.primary);
+            
+            const stop2 = document.createElementNS(svgNS, 'stop');
+            stop2.setAttribute('offset', '100%');
+            stop2.setAttribute('stop-color', colors.secondary);
+            
+            gradient.appendChild(stop1);
+            gradient.appendChild(stop2);
+            defs.appendChild(gradient);
+            svg.appendChild(defs);
+            
+            const background = document.createElementNS(svgNS, 'rect');
+            background.setAttribute('width', '100%');
+            background.setAttribute('height', '100%');
+            background.setAttribute('fill', `url(#bgGradient${uniqueId})`);
+            svg.appendChild(background);
+
+            const textGroup = document.createElementNS(svgNS, 'g');
+
+            lines.forEach((line, index) => {
+                const textElement = document.createElementNS(svgNS, 'text');
+                const isTitle = index === 0;
+                let currentFontSize = isTitle ? fontSize : fontSize * 0.6;
+                
+                // 根据布局调整字体大小
+                if (layout === 'creative') {
+                    currentFontSize = isTitle ? fontSize * 0.8 : fontSize * 0.5;
+                } else if (layout === 'scattered') {
+                    currentFontSize = isTitle ? fontSize * 0.7 : fontSize * 0.45;
+                }
+                
+                textElement.setAttribute('font-size', currentFontSize);
+                textElement.setAttribute('font-weight', isTitle ? 'bold' : 'normal');
+                textElement.setAttribute('fill', colors.text);
+                textElement.textContent = line;
+                textGroup.appendChild(textElement);
+            });
+
+            svg.appendChild(textGroup);
+
+            // 延迟应用布局，确保文本元素已渲染
+            setTimeout(() => {
+                applyLayout(textGroup, layout, width, height, lines.length);
+            }, 10);
+
+            return svg;
+        }
+
+        function applyLayout(textGroup, layout, width, height, lineCount) {
+            const textElements = Array.from(textGroup.children);
+            
+            if (layout === 'center') {
+                let totalHeight = 0;
+                textElements.forEach(el => {
+                    const bbox = el.getBBox ? el.getBBox() : { height: 20 };
+                    totalHeight += bbox.height * 1.3;
+                });
+                
+                let y = (height - totalHeight) / 2 + 30;
+                textElements.forEach(el => {
+                    el.setAttribute('x', width / 2);
+                    el.setAttribute('text-anchor', 'middle');
+                    el.setAttribute('y', y);
+                    const bbox = el.getBBox ? el.getBBox() : { height: 20 };
+                    y += bbox.height * 1.3;
+                });
+            } else if (layout === 'left') {
+                let y = 50;
+                textElements.forEach(el => {
+                    el.setAttribute('x', 30);
+                    el.setAttribute('text-anchor', 'start');
+                    el.setAttribute('y', y);
+                    const bbox = el.getBBox ? el.getBBox() : { height: 20 };
+                    y += bbox.height * 1.4;
+                });
+            } else if (layout === 'creative') {
+                // 创意布局：错落有致
+                textElements.forEach((el, index) => {
+                    const isTitle = index === 0;
+                    if (isTitle) {
+                        el.setAttribute('x', width / 2);
+                        el.setAttribute('text-anchor', 'middle');
+                        el.setAttribute('y', 60);
+                    } else {
+                        const xPos = index % 2 === 0 ? width * 0.3 : width * 0.7;
+                        el.setAttribute('x', xPos);
+                        el.setAttribute('text-anchor', 'middle');
+                        el.setAttribute('y', 100 + (index - 1) * 35);
+                    }
+                });
+            } else if (layout === 'scattered') {
+                // 艺术布局：分散排列
+                const positions = [
+                    { x: width * 0.5, y: 50, anchor: 'middle' },
+                    { x: width * 0.2, y: 120, anchor: 'start' },
+                    { x: width * 0.8, y: 150, anchor: 'end' },
+                    { x: width * 0.4, y: 200, anchor: 'middle' },
+                    { x: width * 0.7, y: 240, anchor: 'middle' }
+                ];
+                
+                textElements.forEach((el, index) => {
+                    const pos = positions[index] || positions[positions.length - 1];
+                    el.setAttribute('x', pos.x);
+                    el.setAttribute('text-anchor', pos.anchor);
+                    el.setAttribute('y', pos.y);
+                });
+            }
+        }
+
+        function downloadSVG(svgElement, filename) {
+            const serializer = new XMLSerializer();
+            let source = serializer.serializeToString(svgElement);
+            
+            // 添加XML声明和样式
+            if (!source.match(/^<\?xml/)) {
+                source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+            }
+            
+            const blob = new Blob([source], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename + '.svg';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadPNG(svgElement, filename) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const scaleFactor = 2; // 提高分辨率
+            
+            canvas.width = 800 * scaleFactor;
+            canvas.height = 600 * scaleFactor;
+            
+            const xml = new XMLSerializer().serializeToString(svgElement);
+            const svg64 = btoa(unescape(encodeURIComponent(xml)));
+            const b64start = 'data:image/svg+xml;base64,';
+            const image64 = b64start + svg64;
+
+            const img = new Image();
+            img.onload = function() {
+                ctx.scale(scaleFactor, scaleFactor);
+                ctx.drawImage(img, 0, 0, 800, 600);
+                
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename + '.png';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 'image/png', 1.0);
+            };
+            img.src = image64;
+        }
+
+        // 模板选择
+        function selectTemplate(templateType) {
+            currentTemplate = templateType;
+            
+            // 更新模板卡片的选中状态
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelector(`[data-template="${templateType}"]`).classList.add('active');
+        }
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置默认选中的模板
+            selectTemplate('modern');
+            
+            // 为模板卡片添加点击事件
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const templateType = this.getAttribute('data-template');
+                    selectTemplate(templateType);
+                });
+            });
+            
+            // 隐藏海报网格
+            const postersGrid = document.getElementById('posters-grid');
+            postersGrid.style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>
